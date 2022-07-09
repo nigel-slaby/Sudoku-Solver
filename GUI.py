@@ -32,19 +32,22 @@ class Grid:
         self.model = [[self.cubes[i][j].value for j in range(self.cols)] for i in range(self.rows)]
         return self.model
 
-    def place(self, val):
-        row, col = self.selected
-        if self.cubes[row][col].value == 0:
-            self.cubes[row][col].set(val)
-            self.update_model()
+    def place(self, row, col, val):
 
-            if valid(self.model, val, (row,col)) and solve(self.model):
-                return True
-            else:
-                self.cubes[row][col].set(0)
-                self.cubes[row][col].set_temp(0)
-                self.update_model()
-                return False
+        self.cubes[row][col].set(val)
+        self.update_model()
+        # row, col = self.selected
+        # if self.cubes[row][col].value == 0:
+        #     self.cubes[row][col].set(val)
+        #     self.update_model()
+
+        #     if valid(self.model, val, (row,col)) and solve(self.model):
+        #         return True
+        #     else:
+        #         self.cubes[row][col].set(0)
+        #         self.cubes[row][col].set_temp(0)
+        #         self.update_model()
+        #         return False
 
     def sketch(self, val):
         row, col = self.selected
@@ -259,6 +262,16 @@ def valid(bo, num, pos):
 
     return True
 
+def drawText(win, row, col, temp):
+    fnt = pygame.font.SysFont("arial", 40)
+
+        #gap = self.width / 9
+    #x = self.col * gap
+    #y = self.row * gap
+
+    text = fnt.render(str(temp), 1, (0, 255, 255))
+    win.blit(text, (col*60 + (30 - text.get_width()/2), row*60 + (30 - text.get_height()/2)))
+
 def drawRedlineList(win):
     print(redlineList)
 
@@ -354,8 +367,12 @@ def main():
                     print(row, col)
                     print(temp)
                     ######STUCK HERE### figure out how to make this \/ work
-                    board.place(board.cubes[row][col].temp)
+                    board.selected = row, col
+                    print(board.selected)
+                    drawText(win, row, col, temp)
+                    board.place(row, col, temp)
                     #print(board.update_model())
+
                 pygame.display.update()
                 time.sleep(2)
                 if 220 <= mouse[0] <= 320 and 575 <= mouse[1] <= 605:
