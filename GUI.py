@@ -8,11 +8,11 @@ redlineList = []
 
 class Grid:
     board = [
-        [7, 8, 0, 4, 0, 0, 0, 2, 0],
-        [6, 0, 0, 0, 7, 5, 1, 0, 9],
-        [0, 0, 2, 6, 0, 0, 0, 7, 8],
+        [7, 8, 0, 4, 0, 0, 1, 2, 0],
+        [6, 0, 0, 0, 7, 5, 0, 0, 9],
+        [0, 0, 0, 6, 0, 1, 5, 7, 8],
         [0, 0, 7, 0, 4, 0, 2, 6, 0],
-        [0, 1, 0, 0, 5, 0, 9, 3, 0],
+        [0, 0, 1, 0, 5, 0, 9, 3, 0],
         [9, 0, 4, 0, 6, 0, 0, 0, 5],
         [0, 7, 0, 3, 0, 0, 0, 1, 2],
         [1, 2, 0, 0, 0, 7, 4, 0, 0],
@@ -215,7 +215,7 @@ def solve(board):
 
 def valid(bo, num, pos):
     # Check row
-    print(pos)
+    #print(pos)
     for i in range(len(bo[0])):
         if bo[pos[0]][i] == num and pos[1] != i:
             if i > pos[0]:
@@ -265,9 +265,6 @@ def valid(bo, num, pos):
 def drawText(win, row, col, temp):
     fnt = pygame.font.SysFont("arial", 40)
 
-        #gap = self.width / 9
-    #x = self.col * gap
-    #y = self.row * gap
 
     text = fnt.render(str(temp), 1, (0, 255, 255))
     win.blit(text, (col*60 + (30 - text.get_width()/2), row*60 + (30 - text.get_height()/2)))
@@ -298,8 +295,7 @@ def solve_one(board, win, empty, all):
     #box 1
     
     if row <= 2 and col <= 2:
-        #TEMP just checking 1
-        for k in range(1,2):
+        for k in range(1,10):
             if flag:
                 for i in range(0,3):
                     for j in range (0,3):
@@ -309,14 +305,36 @@ def solve_one(board, win, empty, all):
                             if valid(board, k, (i, j)) and (i != row & j != col):
                                 flag = False
                                 print(k)
-            if flag: 
+            if flag == True: 
                 drawRedlineList(win)
+                redlineList.clear()
                 return k
-            flag = True        
-    return True
-    #box 2
-    #if row <= 2 & col >=3 & col <= 5:
+            if flag == False:
+                redlineList.clear()
+                flag = True        
+    return -1
 
+    #box 2
+
+    if row <= 2 and col >=3 and col <= 5:
+        for k in range(1,10):
+            if flag:
+                for i in range(0,3):
+                    for j in range (3,6):
+                        print(board[i][j])
+                        if board[i][j] == 0 and (i != row & j != col):
+                            
+                            if valid(board, k, (i, j)) and (i != row & j != col):
+                                flag = False
+                                print(k)
+            if flag == True: 
+                drawRedlineList(win)
+                redlineList.clear()
+                return k
+            if flag == False:
+                redlineList.clear()
+                flag = True        
+    return -1
     #box 3
     #if row <= 3 & col > 6:
 
@@ -364,11 +382,10 @@ def main():
                     print(temp)
                 if temp > 0 and temp < 10:
                     row, col = empty
-                    print(row, col)
-                    print(temp)
-                    ######STUCK HERE### figure out how to make this \/ work
-                    board.selected = row, col
-                    print(board.selected)
+                    #print(row, col)
+                    #print(temp)
+                    #board.selected = row, col
+                    #print(board.selected)
                     drawText(win, row, col, temp)
                     board.place(row, col, temp)
                     #print(board.update_model())
