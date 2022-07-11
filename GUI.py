@@ -8,15 +8,15 @@ redlineList = []
 
 class Grid:
     board = [
-        [0, 0, 0, 4, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 7, 5, 1, 0, 9],
+        [7, 8, 0, 4, 0, 0, 1, 2, 0],
+        [6, 0, 0, 0, 7, 5, 0, 0, 9],
         [0, 0, 0, 6, 0, 1, 0, 7, 8],
         [0, 0, 7, 0, 4, 0, 2, 6, 0],
         [0, 0, 1, 0, 5, 0, 9, 3, 0],
-        [9, 2, 4, 0, 6, 0, 0, 0, 5],
-        [0, 1, 9, 3, 0, 0, 0, 1, 2],
-        [2, 2, 0, 0, 2, 7, 4, 0, 0],
-        [0, 4, 3, 2, 0, 6, 0, 0, 7]
+        [9, 0, 4, 0, 6, 0, 0, 0, 5],
+        [0, 7, 0, 3, 0, 0, 0, 1, 2],
+        [1, 2, 0, 0, 0, 7, 4, 0, 0],
+        [0, 4, 9, 2, 0, 6, 0, 0, 7]
     ]
 
     def __init__(self, rows, cols, width, height):
@@ -227,15 +227,16 @@ def valid(bo, num, pos):
     for i in range(len(bo[0])):
         #print(bo[pos[0]][i], num, pos)
         if bo[pos[0]][i] == num and pos[1] != i:
-            if i > pos[0]:
-                print(i, pos[0])
+            print(i, pos[0], 'row check')
+            if i > pos[1]:
+                
                 xstart = (i * 60 + 30)
                 xfinish = 0               
                 ystart = (pos[0]*60) + 30
                 yfinish = (pos[0]*60) + 30                
                 redlineList.append([xstart, xfinish, ystart, yfinish])                
-            if i < pos[0]:
-                print(i, pos[0])
+            if i < pos[1]:
+                
                 xstart = (i * 60 + 30)
                 xfinish = 540               
                 ystart = (pos[0]*60) + 30
@@ -246,13 +247,14 @@ def valid(bo, num, pos):
     # Check column
     for i in range(len(bo)):
         if bo[i][pos[1]] == num and pos[0] != i:
-            if i > pos[1]:
+            print(i, pos[1], 'col check')
+            if i > pos[0]:
                 xstart = (pos[1]*60) + 30
                 xfinish = (pos[1]*60) + 30           
                 ystart = (i * 60 + 30)
                 yfinish = 0
                 redlineList.append([xstart, xfinish, ystart, yfinish])
-            if i < pos[1]:
+            if i < pos[0]:
                 xstart = (pos[1]*60) + 30
                 xfinish = (pos[1]*60) + 30       
                 ystart = (i * 60 + 30)
@@ -304,6 +306,7 @@ def solve_one(board, model, win, empty, all):
     if row <= 2 and col <= 2:
         for k in range(1,10):
             if valid(model, k, empty):
+                redlineList.clear()
                 if flag:
                     for i in range(0,3):
                         for j in range (0,3):
@@ -328,6 +331,7 @@ def solve_one(board, model, win, empty, all):
     if row <= 2 and col >=3 and col <= 5:
         for k in range(1,10):
             if valid(model, k, empty):
+                redlineList.clear()
                 if flag:
                     for i in range(0,3):
                         for j in range (3,6):
@@ -350,6 +354,7 @@ def solve_one(board, model, win, empty, all):
     if row <= 2 and col >= 6:
         for k in range(1,10):
             if valid(model, k, empty):
+                redlineList.clear()
                 if flag:
                     for i in range(0,3):
                         for j in range (6,9):
@@ -369,22 +374,144 @@ def solve_one(board, model, win, empty, all):
                     flag = True        
         return -1
     #box 4
-    #if row >=4 & row <= 6 & col < 3:
-
+    if row >=3 and row <= 5 and col <= 2:
+        for k in range(1,10):
+            if valid(model, k, empty):
+                redlineList.clear()
+                if flag:
+                    for i in range(3,6):
+                        for j in range (0,3):
+                            print(model[i][j], 'i',i, 'j',j, 'k:',k)
+                            if (i,j) != empty:
+                                if model[i][j] == 0 or model[i][j] == -1:
+                                    if valid(model, k, (i, j)):
+                                        flag = False
+                                        print(k)
+                if flag == True: 
+                    drawRedlineList(win)
+                    redlineList.clear()
+                    reset_board(board, model)
+                    return k
+                if flag == False:
+                    redlineList.clear()
+                    flag = True        
+        return -1
     #box 5
-    #if row >=4 & row <= 6 & col >=4 & col <= 6:
-
+    if row >=3 and row <= 5 and col >=3 and col <=5:
+        for k in range(1,10):
+            if valid(model, k, empty):
+                redlineList.clear()
+                if flag:
+                    for i in range(3,6):
+                        for j in range (3,6):
+                            print(model[i][j], 'i',i, 'j',j, 'k:',k)
+                            if (i,j) != empty:
+                                if model[i][j] == 0 or model[i][j] == -1:
+                                    if valid(model, k, (i, j)):
+                                        flag = False
+                                        print(k)
+                if flag == True: 
+                    drawRedlineList(win)
+                    redlineList.clear()
+                    reset_board(board, model)
+                    return k
+                if flag == False:
+                    redlineList.clear()
+                    flag = True        
+        return -1
     #box 6
-    #if row >=4 & row <= 6 & col > 6:
-
+    if row >=3 and row <= 5 and col >= 6:
+        for k in range(1,10):
+            if valid(model, k, empty):
+                redlineList.clear()
+                if flag:
+                    for i in range(3,6):
+                        for j in range (6,9):
+                            print(model[i][j], 'i',i, 'j',j, 'k:',k)
+                            if (i,j) != empty:
+                                if model[i][j] == 0 or model[i][j] == -1:
+                                    if valid(model, k, (i, j)):
+                                        flag = False
+                                        print(k)
+                if flag == True: 
+                    drawRedlineList(win)
+                    redlineList.clear()
+                    reset_board(board, model)
+                    return k
+                if flag == False:
+                    redlineList.clear()
+                    flag = True        
+        return -1
     #box 7
-    #if row > 6  & col < 3:
-
+    if row >= 6 and col <= 2:
+        for k in range(1,10):
+            if valid(model, k, empty):
+                redlineList.clear()
+                if flag:
+                    for i in range(6,9):
+                        for j in range (0,3):
+                            print(model[i][j], 'i',i, 'j',j, 'k:',k)
+                            if (i,j) != empty:
+                                if model[i][j] == 0 or model[i][j] == -1:
+                                    if valid(model, k, (i, j)):
+                                        flag = False
+                                        print(k)
+                if flag == True: 
+                    drawRedlineList(win)
+                    redlineList.clear()
+                    reset_board(board, model)
+                    return k
+                if flag == False:
+                    redlineList.clear()
+                    flag = True        
+        return -1
     #box 8
-    #if row > 6 & col >=4 & col <= 6:
-
+    if row >= 6 and col >=3 and col <=5:
+        for k in range(1,10):
+            if valid(model, k, empty):
+                redlineList.clear()
+                if flag:
+                    for i in range(6,9):
+                        for j in range (3,6):
+                            print(model[i][j], 'i',i, 'j',j, 'k:',k)
+                            if (i,j) != empty:
+                                if model[i][j] == 0 or model[i][j] == -1:
+                                    if valid(model, k, (i, j)):
+                                        flag = False
+                                        print(k)
+                if flag == True: 
+                    drawRedlineList(win)
+                    redlineList.clear()
+                    reset_board(board, model)
+                    return k
+                if flag == False:
+                    redlineList.clear()
+                    flag = True        
+        return -1
+        
     #box 9
-    #if row > 6 & col > 6:
+    if row >= 6 and col >=6:
+        for k in range(1,10):
+            if valid(model, k, empty):
+                redlineList.clear()
+                if flag:
+                    for i in range(6,9):
+                        for j in range (6,9):
+                            print(model[i][j], 'i',i, 'j',j, 'k:',k)
+                            if (i,j) != empty:
+                                if model[i][j] == 0 or model[i][j] == -1:
+                                    if valid(model, k, (i, j)):
+                                        flag = False
+                                        print(k)
+                if flag == True: 
+                    drawRedlineList(win)
+                    redlineList.clear()
+                    reset_board(board, model)
+                    return k
+                if flag == False:
+                    redlineList.clear()
+                    flag = True        
+        return -1
 
 def main():
     win = pygame.display.set_mode((540,650))
@@ -394,9 +521,33 @@ def main():
     run = True
     start = time.time()
     strikes = 0
+    solve_all = False
     while run:
 
         play_time = round(time.time() - start)
+        empty = find_empty(board.update_model())  
+
+        #solve all with flag to start (activated by button)
+        if solve_all and empty != None:
+            empty = find_empty(board.update_model())           
+            temp = solve_one(board, board.update_model(), win, empty, False)
+            print(temp)
+
+            row, col = empty
+                        #print(row, col)
+                        #print(temp)
+                        #board.selected = row, col
+                        #print(board.selected)
+            if temp > 0:
+                drawText(win, row, col, temp)
+                board.place(row, col, temp)
+                print(board.update_model())
+                pygame.display.update()
+                time.sleep(0.5)
+            else:
+                board.place(row, col, temp)
+                print(board.update_model())
+                pygame.display.update()
 
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -408,26 +559,27 @@ def main():
                 if 40 <= mouse[0] <= 140 and 575 <= mouse[1] <= 605:
                     #red_line_draw(win, 0, 30, 540, 30)
                     empty = find_empty(board.update_model())
-                    temp = solve_one(board, board.update_model(), win, empty, False)
-                    print(temp)
+                    if empty != None:
+                        temp = solve_one(board, board.update_model(), win, empty, False)
+                        print(temp)
 
-                    row, col = empty
+                        row, col = empty
                         #print(row, col)
                         #print(temp)
                         #board.selected = row, col
                         #print(board.selected)
-                    if temp > 0:
-                        drawText(win, row, col, temp)
-                        board.place(row, col, temp)
-                        print(board.update_model())
-                        pygame.display.update()
-                        time.sleep(2)
-                    else:
-                        board.place(row, col, temp)
-                        print(board.update_model())
-                        pygame.display.update()
+                        if temp > 0:
+                            drawText(win, row, col, temp)
+                            board.place(row, col, temp)
+                            print(board.update_model())
+                            pygame.display.update()
+                            time.sleep(0.5)
+                        else:
+                            board.place(row, col, temp)
+                            print(board.update_model())
+                            pygame.display.update()
                 if 220 <= mouse[0] <= 320 and 575 <= mouse[1] <= 605:
-                    pygame.quit()
+                        solve_all = True
                 if 400 <= mouse[0] <= 500 and 575 <= mouse[1] <= 605:
                     pygame.quit()
             if event.type == pygame.QUIT:
