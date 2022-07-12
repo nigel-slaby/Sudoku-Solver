@@ -210,7 +210,6 @@ def solve_one(board, model, win, empty):
     row, col = empty
     flag = True
     #box 1
-    print(empty)
     if row <= 2 and col <= 2:
         for k in range(1,10):
             if valid(model, k, empty):
